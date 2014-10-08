@@ -20,13 +20,19 @@ mongoose.connect(config.mongo.uri, config.mongo.options);
 var app = express();
 require('./lib/config/express')(app);
 
-var DataFormHandler = new (formsAngular)(app, {urlPrefix: '/api/'});
+var DataFormHandler = new (formsAngular)(app, {
+  urlPrefix: '/api/',
+  JQMongoFileUploader: {}
+});
 
 // Bootstrap forms-angular controlled models
 var modelsPath = path.join(__dirname, 'app/models');
+
 fs.readdirSync(modelsPath).forEach(function (file) {
   var fname = modelsPath + '/' + file;
   if (fs.statSync(fname).isFile()) {
+    // This next call is deprecated, but didn't have time to make the changes.  Use newResource(model, options) instead.
+    // See https://github.com/forms-angular/forms-angular/issues/39
     DataFormHandler.addResource(file.slice(0, -3), require(fname));
   }
 });

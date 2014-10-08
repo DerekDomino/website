@@ -210,10 +210,18 @@ module.exports = function (grunt) {
     },
 
     // Automatically inject Bower components into the app
-    'bower-install': {
+    wiredep: {
       app: {
-        html: '<%= yeoman.app %>/index.html',
-        ignorePath: '<%= yeoman.app %>/'
+        src: '<%= yeoman.app %>/index.html',
+        exclude: [
+          /bootstrap-sass-official/,
+          /bootstrap.js/,
+          '/json3/',
+          '/es5-shim/',
+          /blueimp-file-upload\/js\/jquery.fileupload-ui.js/,
+          /blueimp-file-upload\/js\/jquery.fileupload-jquery-ui.js/,
+          /ckeditor\/ckeditor.js/
+          ]
       }
     },
 
@@ -295,7 +303,7 @@ module.exports = function (grunt) {
 
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
     // minsafe compatible so Uglify does not destroy the ng references
-    ngmin: {
+    ngAnnotate: {
       dist: {
         files: [{
           expand: true,
@@ -404,15 +412,13 @@ module.exports = function (grunt) {
 //         }
 //       }
 //    },
-//    uglify: {
-//       dist: {
-//         files: {
-//           '<%= yeoman.dist %>/scripts/scripts.js': [
-//             '<%= yeoman.dist %>/scripts/scripts.js'
-//           ]
-//         }
-//       }
-//    },
+    uglify: {
+      options: {
+        compress: {
+          drop_console: true
+        }
+      }
+    },
 //    concat: {
 //       dist: {}
 //    },
@@ -474,7 +480,7 @@ module.exports = function (grunt) {
     if (target === 'debug') {
       return grunt.task.run([
         'clean:server',
-        'bower-install',
+        'wiredep',
         'less',
         'concurrent:server',
         'autoprefixer',
@@ -484,7 +490,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'bower-install',
+      'wiredep',
       'less',
       'concurrent:server',
       'autoprefixer',
@@ -529,13 +535,13 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'bower-install',
+    'wiredep',
     'less',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
     'concat',
-    'ngmin',
+    'ngAnnotate',
     'copy:dist',
     'cdnify',
     'cssmin',

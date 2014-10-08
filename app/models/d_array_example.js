@@ -8,7 +8,11 @@ var DSchema = new Schema({
   weight: {type: Number, form: {label: 'Weight (lbs)'}},
   dateOfBirth: Date,
   accepted: Boolean,
-  specialSubjects: [String]
+  specialSubjects: [String],
+  hobbies: [{type: String}],
+  sports: {type: [String]},
+  someOptions: {type: [String], enum:['First','Second','Third']},
+  moreOptions: {type: [String], enum:['First','Second','Third'], form:{select2: true}}
 });
 
 var D;
